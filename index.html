@@ -153,7 +153,7 @@
     </div>
     <h2>
       <span class="txt" data-id="title">Kalkulasi Paparan Vibrasi</span>
-      <span class="txt" data-id="subtitle">Sesuai Permenkes No. 70 Tahun 2016 dan KEPMENAKER 51/MEN/1999</span>
+      <span class="txt" data-id="subtitle">Sesuai Permenkes No. 70 Th 2016 dan ISO 2631-1:1997</span>
     </h2>
 
     <div class="section">
@@ -196,17 +196,17 @@
         </tr>
         <tr>
           <td><span class="tooltip txt" data-id="rmsAmbang">Ambang Batas RMS
-            <span class="tooltiptext txt" data-id="rmsAmbangTip">Nilai ambang RMS sesuai KEPMENAKER 51/MEN/1999 (0.5 m/s² untuk 8 jam).</span></span></td>
+            <span class="tooltiptext txt" data-id="rmsAmbangTip">Nilai ambang RMS sesuai Permenkes No. 70 Th 2016 (0.5 m/s² untuk 8 jam).</span></span></td>
           <td><input type="number" id="rmsAmbang" step="0.01" min="0" placeholder="0.50" oninput="hitung()" value="0.5"></td>
           <td>m/s²</td>
-          <td>KEPMENAKER 51/MEN/1999</td>
+          <td>Permenkes No. 70 Th 2016</td>
         </tr>
         <tr>
           <td><span class="tooltip txt" data-id="vdvAmbang">Ambang Batas VDV
             <span class="tooltiptext txt" data-id="vdvAmbangTip">NAB VDV KEPMENAKER (9.1 m/s<sup>1.75</sup> untuk 8 jam).</span></span></td>
           <td><input type="number" id="vdvAmbang" step="0.01" min="0" placeholder="9.10" oninput="hitung()" value="9.1"></td>
           <td>m/s<sup>1.75</sup></td>
-          <td>KEPMENAKER 51/MEN/1999</td>
+          <td>Permenkes No. 70 Th 2016</td>
         </tr>
       </table>
     </div>
@@ -306,10 +306,10 @@
       <div class="literature">
         <ul>
           <li><a href="https://peraturan.bpk.go.id/Home/Details/112984/permenkes-no-70-tahun-2016" target="_blank"><strong>Permenkes No. 70 Tahun 2016</strong></a> – <span class="txt" data-id="lit1">Standar dan Batasan Paparan Getaran di Tempat Kerja</span>.</li>
-          <li><a href="https://jdih.kemnaker.go.id/produk_hukum/51-men-1999.pdf" target="_blank"><strong>KEPMENAKER No. 51/MEN/1999</strong></a> – <span class="txt" data-id="lit2">Nilai Ambang Batas Faktor Fisika di Tempat Kerja</span>.</li>
+          <li><a href="https://medialab.co.id/wp-content/uploads/2022/04/19-KepMenaker-RI-No-51Tahun-1999.pdf" target="_blank"><strong>KEPMENAKER No. 51/MEN/1999</strong></a> – <span class="txt" data-id="lit2">Nilai Ambang Batas Faktor Fisika di Tempat Kerja</span>.</li>
           <li><a href="https://www.iso.org/standard/7612.html" target="_blank"><strong>ISO 2631-1:1997</strong></a> – <span class="txt" data-id="lit3">Mechanical vibration and shock — Evaluation of human exposure to whole-body vibration</span>.</li>
-          <li><a href="https://www.sciencedirect.com/book/9780123030400/handbook-of-human-vibration" target="_blank"><strong>Griffin, M.J. (1990)</strong></a> – Handbook of Human Vibration.</li>
-          <li><a href="https://pubmed.ncbi.nlm.nih.gov/16361190/" target="_blank"><strong>Bovenzi, M. (2005)</strong></a> – <span class="txt" data-id="lit5">Health effects of mechanical vibration</span>.</li>
+          <li><a href="https://www.sciencedirect.com/book/9780123030405/handbook-of-human-vibration" target="_blank"><strong>Griffin, M.J. (1990)</strong></a> – Handbook of Human Vibration.</li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/15915675/" target="_blank"><strong>Bovenzi, M. (2005)</strong></a> – <span class="txt" data-id="lit5">Health effects of mechanical vibration</span>.</li>
         </ul>
       </div>
     </div>
@@ -327,7 +327,7 @@
     const textMap = {
       id: {
         title: "Kalkulasi Paparan Vibrasi",
-        subtitle: "Sesuai Permenkes No. 70 Tahun 2016 dan KEPMENAKER 51/MEN/1999",
+        subtitle: "Sesuai Permenkes No. 70 Tahun 2016 dan ISO 2631-1:1997",
         input: "INPUT",
         output: "OUTPUT",
         param: "Parameter",
@@ -339,7 +339,7 @@
         az: "Akselerasi RMS Z", azTip: "Rata-rata percepatan getaran arah Z (m/s²).",
         durasi: "Durasi Pajanan", durasiTip: "Lama paparan getaran (detik). 1 shift = 28,800 detik.",
         sec: "detik",
-        rmsAmbang: "Ambang Batas RMS", rmsAmbangTip: "Nilai ambang RMS sesuai KEPMENAKER 51/MEN/1999 (0.5 m/s² untuk 8 jam).",
+        rmsAmbang: "Ambang Batas RMS", rmsAmbangTip: "Nilai ambang RMS sesuai Permenkes No. 70 Tahun 2016 (0.5 m/s² untuk 8 jam).",
         vdvAmbang: "Ambang Batas VDV", vdvAmbangTip: "NAB VDV KEPMENAKER (9.1 m/s<sup>1.75</sup> untuk 8 jam).",
         rmsResultan: "RMS Resultan", rmsResultanTip: "√[(1.4X)² + (1.4Y)² + (Z)²]",
         vdv: "VDV (Vibration Dose Value)", vdvTip: "VDV = RMS_resultan × durasi<sup>0.25</sup>",
@@ -361,7 +361,7 @@
       },
       en: {
         title: "Vibration Exposure Calculation",
-        subtitle: "According to Indonesian Permenkes No.70/2016 and Ministerial Decree 51/MEN/1999",
+        subtitle: "According to Indonesian Permenkes No.70/2016 and ISO 2631-1:1997",
         input: "INPUT",
         output: "OUTPUT",
         param: "Parameter",
@@ -373,7 +373,7 @@
         az: "RMS Acceleration Z", azTip: "Mean vibration acceleration on Z axis (m/s²).",
         durasi: "Exposure Duration", durasiTip: "Exposure duration (seconds). 1 shift = 28,800 s.",
         sec: "sec",
-        rmsAmbang: "RMS Threshold", rmsAmbangTip: "RMS limit per KEPMENAKER 51/MEN/1999 (0.5 m/s² for 8 hours).",
+        rmsAmbang: "RMS Threshold", rmsAmbangTip: "RMS limit per Permenkes No. 70 Tahun 2016 (0.5 m/s² for 8 hours).",
         vdvAmbang: "VDV Threshold", vdvAmbangTip: "NAB VDV (9.1 m/s<sup>1.75</sup> for 8 hours).",
         rmsResultan: "Resultant RMS", rmsResultanTip: "√[(1.4X)² + (1.4Y)² + (Z)²]",
         vdv: "VDV (Vibration Dose Value)", vdvTip: "VDV = RMS_resultant × duration<sup>0.25</sup>",
