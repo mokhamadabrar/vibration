@@ -8,44 +8,66 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root{
-    --bg:#0b1220; --card:#121a2b; --ink:#f3f6ff; --muted:#9fb0d0; --accent:#5cc8ff; --ok:#7ee081; --warn:#ffd166; --bad:#ff6b6b;
+    /* Palet lembut */
+    --bg1:#0f172a; --bg2:#111827;        /* background */
+    --card:#111827;                      /* kartu */
+    --ink:#e5e7eb;                       /* teks utama */
+    --muted:#b6c1d6;                     /* teks sekunder */
+    --accent:#7dd3fc;                    /* aksen */
+    --ok:#86efac; --warn:#facc15; --bad:#fb7185;
     --br:16px;
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:linear-gradient(180deg,#08101e,#0b1220)}
-  header{padding:24px 16px 8px;text-align:center}
+  body{
+    margin:0;
+    font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  }
+  header{padding:22px 16px 8px;text-align:center}
   header h1{margin:0 0 6px;font-weight:700;letter-spacing:.2px}
   header p{margin:0;color:var(--muted)}
   .wrap{max-width:1100px;margin:18px auto 40px;padding:0 16px}
   .toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0 16px}
-  .btn{cursor:pointer;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:#0e1830;color:var(--ink)}
+  .btn{cursor:pointer;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:#0e1530;color:var(--ink)}
   .btn:hover{border-color:var(--accent)}
-  select{padding:10px;border-radius:10px;background:#0b1529;color:var(--ink);border:1px solid rgba(255,255,255,.2)}
-  .card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:var(--br);padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.35);margin-bottom:14px}
+  select{padding:10px;border-radius:10px;background:#0b1326;color:var(--ink);border:1px solid rgba(255,255,255,.18)}
+  .card{
+    background:linear-gradient(180deg,#121a2f,#0f162b);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:var(--br);
+    padding:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+    margin-bottom:14px
+  }
   .grid{display:grid;gap:14px}
-  @media(min-width:980px){ .grid{grid-template-columns:1.1fr 1.2fr}}
+  @media(min-width:980px){ .grid{grid-template-columns:1.08fr 1.12fr}}
   label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
-  input[type=number]{width:100%;padding:10px 12px;background:#0b1529;border:1px solid rgba(255,255,255,.12);color:var(--ink);border-radius:10px;outline:none}
-  input[type=number]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(92,200,255,.15)}
+  input[type=number]{width:100%;padding:10px 12px;background:#0b1326;border:1px solid rgba(255,255,255,.12);color:var(--ink);border-radius:10px;outline:none}
+  input[type=number]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(125,211,252,.18)}
   .row{display:grid;gap:12px;grid-template-columns:repeat(4,1fr)}
-  .row-3{display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}
+  @media(max-width:720px){ .row{grid-template-columns:1fr}}
   .hint{font-size:12px;color:var(--muted)}
-  .stat{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#0e1830;border:1px solid rgba(255,255,255,.08);border-radius:12px;margin:8px 0}
+  .stat{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#0e1733;border:1px solid rgba(255,255,255,.08);border-radius:12px;margin:8px 0}
   .stat b{font-size:18px}
   .pill{padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid rgba(255,255,255,.15);color:var(--muted)}
-  .ok{color:var(--ok);border-color:rgba(126,224,129,.35)}
-  .warn{color:var(--warn);border-color:rgba(255,209,102,.35)}
-  .bad{color:var(--bad);border-color:rgba(255,107,107,.35)}
+  .ok{color:var(--ok);border-color:rgba(134,239,172,.35)}
+  .warn{color:var(--warn);border-color:rgba(250,204,21,.35)}
+  .bad{color:var(--bad);border-color:rgba(251,113,133,.35)}
   h2{margin:10px 0 8px}
   h3{margin:8px 0 6px}
   ul{margin:8px 0 0 18px}
   table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:12px;margin-top:8px}
   th,td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
-  th{font-weight:600;color:var(--muted);background:#0f1932;position:sticky;top:0}
+  th{font-weight:600;color:var(--muted);background:#101a36;position:sticky;top:0}
   tr:last-child td{border-bottom:none}
-  .flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .small{font-size:12px;color:var(--muted)}
-  canvas{background:#0e1830;border-radius:12px;padding:8px}
+  .chartbox{width:100%;height:clamp(220px,36vw,320px)} /* dinamis & nyaman di Android */
+  canvas{width:100%!important;height:100%!important;background:#0f1a36;border-radius:12px;padding:8px}
+  footer{max-width:1100px;margin:20px auto 60px;color:var(--muted);text-align:center;padding:0 16px}
+  footer a{color:var(--accent);text-decoration:none}
+  footer a:hover{text-decoration:underline}
+
   /* PRINT */
   @media print{
     body{background:#fff;color:#000}
@@ -77,7 +99,7 @@
       <h2 id="t_inputs">Input</h2>
       <label for="ahv" id="t_ahvlabel">aₕᵥ (m/s²) – RMS alat</label>
       <input id="ahv" type="number" step="0.01" min="0" value="2.50" />
-      <div class="hint" id="t_ahvhint">Contoh: 2.50 m/s² (ambang A(8) tepat 8 jam penuh)</div>
+      <div class="hint" id="t_ahvhint">Contoh: 2.50 m/s² (A(8) = 2.5 jika 8 jam penuh)</div>
 
       <div class="row" style="margin-top:10px">
         <div>
@@ -88,12 +110,12 @@
         <div>
           <label for="shiftH" id="t_shiftlabel">Durasi shift (jam)</label>
           <input id="shiftH" type="number" step="0.5" min="1" value="8" />
-          <div class="hint" id="t_shifthint">T paparan ≤ durasi shift; A(8) tetap dinormalisasi ke 8 jam</div>
+          <div class="hint" id="t_shifthint">Paparan ≤ durasi shift; A(8) tetap dinormalisasi 8 jam</div>
         </div>
         <div>
           <label for="toolHours" id="t_toolhlabel">Total jam alat/hari</label>
           <input id="toolHours" type="number" step="0.25" min="0" value="8" />
-          <div class="hint" id="t_toolhhint">Untuk hitung jumlah operator minimum (rotasi)</div>
+          <div class="hint" id="t_toolhhint">Untuk hitung operator minimum (rotasi)</div>
         </div>
         <div style="display:flex;align-items:end"><button class="btn" id="btnCalc">Hitung</button></div>
       </div>
@@ -122,9 +144,9 @@
 
     <div>
       <h2 id="t_opts">Opsi Jadwal & A(8)</h2>
-      <div class="flex">
+      <div class="small" id="t_presethint">Tambah baris: Work′ + Break′ per jam</div>
+      <div style="margin:.5rem 0" class="flex">
         <button class="btn" id="btnAddPreset">+ Preset Kustom</button>
-        <span class="small" id="t_presethint">Tambah baris: Work′ + Break′ per jam</span>
       </div>
       <table id="schedTable">
         <thead>
@@ -140,7 +162,7 @@
         <tbody><!-- rows --></tbody>
       </table>
       <div class="small" style="margin-top:6px" id="t_dutydef">
-        Duty = menit kerja per jam / 60. T = min(shift, 8) × Duty? <u>Catatan:</u> paparan efektif ≤ durasi shift; A(8)=aₕᵥ·√(T/8).
+        Duty = menit kerja per jam / 60. T efektif = duty × durasi shift (≤ shift). A(8)=aₕᵥ·√(T/8).
       </div>
     </div>
   </div>
@@ -148,23 +170,39 @@
   <div class="card grid">
     <div>
       <h3 id="t_chart1title">Chart: Work vs Break per Jam</h3>
-      <canvas id="chartWB" height="200"></canvas>
+      <div class="chartbox"><canvas id="chartWB"></canvas></div>
     </div>
     <div>
       <h3 id="t_chart2title">Chart: A(8) vs Durasi Shift</h3>
-      <canvas id="chartA8" height="200"></canvas>
+      <div class="chartbox"><canvas id="chartA8"></canvas></div>
       <div class="small" id="t_chart2hint">Kurva dihitung untuk duty aktif terpilih & aₕᵥ saat ini</div>
     </div>
   </div>
 
+  <!-- Seksi dengan rekomendasi DINAMIS -->
   <div class="card">
     <h2 id="t_sec1">1. Durasi Kerja & Jeda (Vibration Breaks)</h2>
-    <p id="t_sec1p">Gunakan rekomendasi per jam di atas untuk mengatur blok kerja. Jeda = tugas non-vibration (administrasi, inspeksi visual, housekeeping, briefing). Untuk lingkungan panas/pekerjaan berat, pilih duty lebih rendah agar aman & ergonomis.</p>
+    <p id="t_sec1p">
+      Gunakan rekomendasi per jam di atas untuk mengatur blok kerja. Jeda = tugas non-vibration
+      (administrasi, inspeksi visual, housekeeping, briefing). Untuk lingkungan panas/kerja berat,
+      pilih duty lebih rendah untuk ergonomi.
+    </p>
+    <ul id="t_sec1ulExtra">
+      <li id="t_workdur">Berapa lama durasi bekerja: <b id="wbWorkMin">—</b> menit</li>
+      <li id="t_breakdur">Berapa lama durasi break: <b id="wbBreakMin">—</b> menit</li>
+    </ul>
   </div>
 
   <div class="card">
     <h2 id="t_sec2">2. Rotasi Pekerja (Work Rotation)</h2>
-    <p id="t_sec2p">Jumlah operator minimum = <span style="font-family:ui-monospace">ceil(ToolHours / T<sub>max</sub>)</span>. Rotasi dalam blok: operator A menjalankan 1–2 blok, kemudian operator B, dst., memastikan setiap orang tidak melebihi T<sub>max</sub> per hari.</p>
+    <p id="t_sec2p">
+      Jika beban kerja total &gt; 8 jam per hari, bagi ke beberapa orang. Minimum operator =
+      <span style="font-family:ui-monospace">ceil(TotalToolHours / T<sub>max</sub>)</span>.
+    </p>
+    <ul id="rotDynamic">
+      <li id="t_rotExample1">Contoh: Pekerjaan total alat <b id="rotToolHours">—</b> jam/hari → minimal <b id="rotOps">—</b> operator</li>
+      <li id="t_rotExample2">Rotasi blok: <b id="rotWork">—</b> menit kerja → <b id="rotBreak">—</b> menit jeda → berganti operator maka blok berikutnya</li>
+    </ul>
   </div>
 
   <div class="card">
@@ -213,6 +251,13 @@
   </div>
 </div>
 
+<footer>
+  <div>Created by</div>
+  <div>HTML design by Abrar</div>
+  <div>Turner &amp; Towsand Indonesia</div>
+  <div style="margin-top:8px"><a href="https://mokhamadabrar.github.io/vibration/exposureSIM.html" target="_blank" rel="noopener">GitHub Pages: exposureSIM.html</a></div>
+</footer>
+
 <script>
 /*** i18n ***/
 const T = {
@@ -222,13 +267,13 @@ const T = {
     langlabel:"Bahasa:",
     inputs:"Input",
     ahvlabel:"aₕᵥ (m/s²) – RMS alat",
-    ahvhint:"Contoh: 2.50 m/s² (ambang A(8) tepat 8 jam penuh)",
+    ahvhint:"Contoh: 2.50 m/s² (A(8) = 2.5 jika 8 jam penuh)",
     targetlabel:"Target A(8) (m/s²)",
     targethint:"Disarankan < 2.50 sebagai margin aman",
     shiftlabel:"Durasi shift (jam)",
-    shifthint:"T paparan ≤ durasi shift; A(8) tetap dinormalisasi ke 8 jam",
+    shifthint:"Paparan ≤ durasi shift; A(8) tetap dinormalisasi 8 jam",
     toolhlabel:"Total jam alat/hari",
-    toolhhint:"Untuk hitung jumlah operator minimum (rotasi)",
+    toolhhint:"Untuk hitung operator minimum (rotasi)",
     a8fulltxt:"Jika dipakai terus sepanjang shift, A(8) = ",
     tmax8txt:"Durasi paparan maksimum (target, basis 8 jam): ",
     tmaxlimtxt:"Batas paparan dibatasi shift: ",
@@ -244,9 +289,17 @@ const T = {
     chart2title:"Chart: A(8) vs Durasi Shift",
     chart2hint:"Kurva dihitung untuk duty aktif terpilih & aₕᵥ saat ini",
     s1:"1. Durasi Kerja & Jeda (Vibration Breaks)",
-    s1p:"Gunakan rekomendasi per jam di atas untuk mengatur blok kerja. Jeda = tugas non-vibration (administrasi, inspeksi visual, housekeeping, briefing). Untuk lingkungan panas/pekerjaan berat, pilih duty lebih rendah agar aman & ergonomis.",
+    s1p:"Gunakan rekomendasi per jam di atas untuk mengatur blok kerja. Jeda = tugas non-vibration (administrasi, inspeksi visual, housekeeping, briefing). Untuk lingkungan panas/kerja berat, pilih duty lebih rendah untuk ergonomi.",
+    s1ulExtra_work:"Berapa lama durasi bekerja: ",
+    s1ulExtra_break:"Berapa lama durasi break: ",
     s2:"2. Rotasi Pekerja (Work Rotation)",
-    s2p:"Jumlah operator minimum = ceil(ToolHours / T_max). Rotasi dalam blok: operator A menjalankan 1–2 blok, kemudian operator B, dst., memastikan setiap orang tidak melebihi T_max per hari.",
+    s2p:"Jika beban kerja total > 8 jam per hari, bagi ke beberapa orang. Minimum operator = ceil(TotalToolHours / T_max).",
+    rotExample1_prefix:"Contoh: Pekerjaan total alat ",
+    rotExample1_mid:" jam/hari → minimal ",
+    rotExample1_suf:" operator",
+    rotExample2_prefix:"Rotasi blok: ",
+    rotExample2_mid:" menit kerja → ",
+    rotExample2_suf:" menit jeda → berganti operator maka blok berikutnya",
     s3:"3. Engineering Controls",
     s3ul:[
       "Gunakan model alat low-vibration & pegangan anti-vibration bawaan pabrik.",
@@ -289,7 +342,7 @@ const T = {
     targetlabel:"Target A(8) (m/s²)",
     targethint:"Recommended < 2.50 as a safety margin",
     shiftlabel:"Shift duration (h)",
-    shifthint:"Exposure time ≤ shift duration; A(8) normalized to 8 h",
+    shifthint:"Exposure time ≤ shift; A(8) normalized to 8 h",
     toolhlabel:"Tool hours/day (total)",
     toolhhint:"For minimum operators (rotation)",
     a8fulltxt:"If used continuously for the whole shift, A(8) = ",
@@ -308,8 +361,16 @@ const T = {
     chart2hint:"Curve computed for current duty & aₕᵥ",
     s1:"1. Work & Break Duration (Vibration Breaks)",
     s1p:"Use the per-hour recommendation above to block the task. Breaks = non-vibration tasks (admin, visual inspection, housekeeping, briefing). For hot/heavy work, choose a lower duty for ergonomics.",
+    s1ulExtra_work:"Work duration: ",
+    s1ulExtra_break:"Break duration: ",
     s2:"2. Worker Rotation",
-    s2p:"Minimum operators = ceil(ToolHours / T_max). Rotate in blocks so that no one exceeds T_max per day.",
+    s2p:"If total workload exceeds 8 h/day, split across workers. Minimum operators = ceil(TotalToolHours / T_max).",
+    rotExample1_prefix:"Example: Total tool time ",
+    rotExample1_mid:" h/day → at least ",
+    rotExample1_suf:" operators",
+    rotExample2_prefix:"Block rotation: ",
+    rotExample2_mid:" min work → ",
+    rotExample2_suf:" min break → switch operator then next block",
     s3:"3. Engineering Controls",
     s3ul:[
       "Use low-vibration models & OEM anti-vibration handles.",
@@ -344,7 +405,8 @@ const T = {
   }
 };
 
-function setLang(lang){
+function setLang(newLang){
+  lang=newLang;
   const L=T[lang]; if(!L) return;
   document.documentElement.lang = (lang==='en'?'en':'id');
   const set = (id, txt)=>{ const el=document.getElementById(id); if(!el) return; if(Array.isArray(txt)){ el.innerHTML = txt.map(li=>`<li>${li}</li>`).join(''); } else { el.innerHTML = txt; } };
@@ -353,7 +415,7 @@ function setLang(lang){
   set('t_targetlabel', L.targetlabel); set('t_targethint', L.targethint);
   set('t_shiftlabel', L.shiftlabel); set('t_shifthint', L.shifthint);
   set('t_toolhlabel', L.toolhlabel); set('t_toolhhint', L.toolhhint);
-  set('t_a8fulltxt', L.a8fulltxt + `<b id="a8full">—</b>`); // rebuild b
+  set('t_a8fulltxt', L.a8fulltxt + `<b id="a8full">—</b>`);
   set('t_tmax8txt', L.tmax8txt + `<b id="tmax8">—</b> ` + (lang==='id'?'jam':'h'));
   set('t_tmaxlimtxt', L.tmaxlimtxt + `<b id="tmaxLimited">—</b> ` + (lang==='id'?'jam':'h'));
   set('t_perhourtxt', L.perhourtxt + `<b id="perHour">—</b> (kerja + jeda)`);
@@ -370,15 +432,25 @@ function setLang(lang){
   set('t_sec6', L.s6); set('t_sec6ul', L.s6ul);
   set('t_sec7', L.s7); set('t_sec7ul', L.s7ul);
   set('t_foot', L.foot);
-  document.getElementById('t_targetpill').textContent=L.pills.target;
-  document.getElementById('t_shiftpill').textContent=L.pills.shift;
-  document.getElementById('t_dutypill').textContent=L.pills.duty;
-  document.getElementById('t_rotpill').textContent=L.pills.rot;
-  // refresh numbers
+
+  // Label dinamis untuk poin rekomendasi
+  document.getElementById('t_workdur').childNodes[0].nodeValue = L.s1ulExtra_work;
+  document.getElementById('t_breakdur').childNodes[0].nodeValue = L.s1ulExtra_break;
+
+  // Rotasi: template teks dinamis (angka diisi di recalc)
+  updateRotationLabels(); // set frasa tetap
   recalc();
 }
 
-function pillText(lang,a8){
+function updateRotationLabels(){
+  const L=T[lang];
+  document.getElementById('t_rotExample1').innerHTML =
+    `${L.rotExample1_prefix}<b id="rotToolHours">—</b>${L.rotExample1_mid}<b id="rotOps">—</b>${L.rotExample1_suf}`;
+  document.getElementById('t_rotExample2').innerHTML =
+    `${L.rotExample2_prefix}<b id="rotWork">—</b>${L.rotExample2_mid}<b id="rotBreak">—</b>${L.rotExample2_suf}`;
+}
+
+function pillText(a8){
   const P=T[lang].pills;
   if(!isFinite(a8)) return {text:"—", cls:"pill"};
   if(a8 < 2.5) return {text:P.below, cls:"pill ok"};
@@ -390,8 +462,7 @@ function pillText(lang,a8){
 function clamp(val,min,max){ return Math.min(max,Math.max(min,val)); }
 function fmt(x,d=2){ if(!isFinite(x)) return "—"; return Number(x).toFixed(d); }
 
-/*** Data & Presets ***/
-let lang='id';
+/*** Presets ***/
 const defaultPresets = [
   {work:60, break:0,  labelID:"60′ kerja + 0′ jeda (kontinu)", labelEN:"60′ work + 0′ break (continuous)"},
   {work:50, break:10, labelID:"50′ kerja + 10′ jeda", labelEN:"50′ work + 10′ break"},
@@ -404,23 +475,30 @@ let customPresets = []; // {work, break}
 
 /*** Charts ***/
 let chartWB, chartA8;
-
 function buildCharts(){
-  // Work-Break doughnut/bar
   const ctx1=document.getElementById('chartWB');
   if(chartWB) chartWB.destroy();
   chartWB = new Chart(ctx1, {
     type:'doughnut',
     data:{labels:['Work','Break'], datasets:[{data:[50,10]}]},
-    options:{responsive:true, plugins:{legend:{position:'bottom'}}}
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom'}}
+    }
   });
-  // A8 vs shift
   const ctx2=document.getElementById('chartA8');
   if(chartA8) chartA8.destroy();
   chartA8 = new Chart(ctx2, {
     type:'line',
     data:{labels:[], datasets:[{label:'A(8)', data:[], tension:0.25, pointRadius:2}]},
-    options:{responsive:true, plugins:{legend:{display:false}}, scales:{x:{title:{display:true,text:'Shift (h)'}}, y:{title:{display:true,text:'A(8) (m/s²)'}}}}
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{title:{display:true,text:'Shift (h)'}},
+        y:{title:{display:true,text:'A(8) (m/s²)'}}
+      }
+    }
   });
 }
 
@@ -429,11 +507,10 @@ function updateWBChart(workMin, breakMin){
   chartWB.data.labels = (lang==='id')?['Kerja','Jeda']:['Work','Break'];
   chartWB.update();
 }
-
 function updateA8Chart(a_hv, duty){
   const xs=[], ys=[];
-  for(let sh=4; sh<=16; sh+=0.5){ // 4h..16h
-    const T = duty * sh; // paparan tak bisa > shift
+  for(let sh=4; sh<=16; sh+=0.5){
+    const T = duty * sh;
     const a8 = a_hv * Math.sqrt(T/8);
     xs.push(sh.toFixed(1)); ys.push(+a8.toFixed(3));
   }
@@ -451,48 +528,55 @@ function recalc(){
 
   if(!isFinite(targetA) || targetA <= 0){ targetA = 2.20; document.getElementById('targetA').value = targetA; }
 
-  // A(8) jika full shift (continuous)
-  const Tfull = shiftH; // paparan = shift (asumsi continuous)
+  // A(8) continuous selama shift
+  const Tfull = shiftH;
   const a8full = ahv * Math.sqrt(Tfull/8);
-  const pill = pillText(lang,a8full);
+  const pill = pillText(a8full);
   document.getElementById('a8full').textContent = fmt(a8full,2);
   const pillEl = document.getElementById('statusPill'); pillEl.textContent=pill.text; pillEl.className=pill.cls;
 
-  // T_max berbasis target A(8), normalisasi 8 jam
-  const Tmax8 = 8 * Math.pow(targetA/ahv, 2); // bisa > shift
+  // T_max berbasis target (basis 8 jam), lalu batasi oleh shift
+  const Tmax8 = 8 * Math.pow(targetA/ahv, 2);
   const TmaxLimited = Math.min(Tmax8, shiftH);
   document.getElementById('tmax8').textContent = fmt(Tmax8,2);
   document.getElementById('tmaxLimited').textContent = fmt(TmaxLimited,2);
 
-  // Rekomendasi per jam berdasar TmaxLimited
-  const duty = (shiftH>0)? (TmaxLimited/shiftH) : 0; // proporsi jam shift yang aktif
-  const workMin = 60*duty;
-  const breakMin = 60 - workMin;
-  document.getElementById('perHour').textContent = `${fmt(workMin,0)}′ + ${fmt(breakMin,0)}′`;
+  // Duty & rekomendasi per jam
+  const duty = (shiftH>0)? (TmaxLimited/shiftH) : 0;
+  const workMin = Math.round(60*duty);
+  const breakMin = Math.max(0, 60 - workMin);
+  document.getElementById('perHour').textContent = `${workMin}′ + ${breakMin}′`;
 
-  // Rotasi operator
+  // Update poin dinamis (Seksi 1)
+  document.getElementById('wbWorkMin').textContent = workMin;
+  document.getElementById('wbBreakMin').textContent = breakMin;
+
+  // Rotasi operator (Seksi 2)
   let opsNeeded = "—";
   if(isFinite(toolHours) && toolHours>0 && TmaxLimited>0){
     opsNeeded = Math.ceil(toolHours / TmaxLimited);
   }
   document.getElementById('opsNeeded').textContent = opsNeeded;
+  document.getElementById('rotToolHours').textContent = isFinite(toolHours)? fmt(toolHours,2) : '—';
+  document.getElementById('rotOps').textContent = opsNeeded;
+  document.getElementById('rotWork').textContent = workMin;
+  document.getElementById('rotBreak').textContent = breakMin;
 
-  // Build table rows (default + custom)
+  // Tabel preset (basis shift)
   const rows=[...defaultPresets, ...customPresets];
   const tbody=document.querySelector('#schedTable tbody');
   tbody.innerHTML="";
   rows.forEach((p, idx)=>{
     const dutyRow = p.work/60;
-    // paparan efektif = duty × shift (bukan selalu 8)
     const T = dutyRow * shiftH;
     const A8 = ahv * Math.sqrt(T/8);
-    const st = pillText(lang,A8);
+    const st = pillText(A8);
     const label = (lang==='id' ? (p.labelID || `${p.work}′ kerja + ${p.break}′ jeda`) :
                                (p.labelEN || `${p.work}′ work + ${p.break}′ break`));
     const tr=document.createElement('tr');
     tr.innerHTML = `
       <td>${label}</td>
-      <td>${fmt(dutyRow*100,0)}%</td>
+      <td>${Math.round(dutyRow*100)}%</td>
       <td>${fmt(T,2)}</td>
       <td>${fmt(A8,2)}</td>
       <td><span class="${st.cls}">${st.text}</span></td>
@@ -514,14 +598,13 @@ function addPreset(){
   if(b===null) return;
   const wi = Math.max(0, Math.min(60, parseFloat(w)||0));
   const bi = Math.max(0, Math.min(60, parseFloat(b)||0));
-  if(wi+bi===0){ alert('Invalid. Total menit = 0'); return; }
+  if(wi+bi===0){ alert(lang==='id'?'Tidak valid. Total menit = 0':'Invalid. Total minutes = 0'); return; }
   customPresets.push({work:wi, break:bi});
   recalc();
 }
 document.addEventListener('click', (e)=>{
   if(e.target.classList.contains('btn-del')){
     const idx = parseInt(e.target.getAttribute('data-idx'),10);
-    // translate idx (global rows index) to custom index
     const customIdx = idx - defaultPresets.length;
     if(customIdx>=0 && customIdx < customPresets.length){
       customPresets.splice(customIdx,1);
@@ -531,24 +614,23 @@ document.addEventListener('click', (e)=>{
 });
 
 /*** Print PDF ***/
-function doPrint(){
-  // (opsional) bisa menyiapkan elemen/summary khusus sebelum print
-  window.print();
-}
+document.getElementById('btnPrint').addEventListener('click', ()=>window.print());
 
 /*** Events ***/
 document.getElementById('btnCalc').addEventListener('click', recalc);
 document.getElementById('btnAddPreset').addEventListener('click', addPreset);
-document.getElementById('btnPrint').addEventListener('click', doPrint);
-document.getElementById('langSel').addEventListener('change', (e)=>{ lang=e.target.value; setLang(lang); });
+document.getElementById('langSel').addEventListener('change', (e)=>{ setLang(e.target.value); });
 ['ahv','targetA','shiftH','toolHours'].forEach(id=>{
   document.getElementById(id).addEventListener('input', recalc);
 });
 
 /*** Init ***/
-buildCharts();
-setLang('id'); // default
-recalc();
+function init(){
+  buildCharts();
+  setLang('id'); // default
+  recalc();
+}
+init();
 </script>
 </body>
 </html>
