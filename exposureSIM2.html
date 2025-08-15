@@ -12,11 +12,17 @@
     --bg1:#0f172a; --bg2:#111827;
     --card:#111827;
     --ink:#e5e7eb;
-    --muted:#b6c1d6;
+    --muted:#c3cbe0;
     --accent:#7dd3fc;
     --ok:#86efac; --warn:#facc15; --bad:#fb7185;
     --br:16px;
+
+    /* Tema chart (screen) */
+    --chart-bg:#0f1a36;                   /* latar area chart */
+    --chart-ink:#e5e7eb;                  /* warna teks chart */
+    --chart-grid:rgba(255,255,255,.14);   /* gridline */
   }
+
   *{box-sizing:border-box}
   body{
     margin:0;
@@ -61,16 +67,24 @@
   th,td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
   th{font-weight:600;color:var(--muted);background:#101a36;position:sticky;top:0}
   tr:last-child td{border-bottom:none}
-  .small{font-size:12px;color:var(--muted)}
-  .chartbox{width:100%;height:clamp(220px,36vw,320px)}
-  canvas{width:100%!important;height:100%!important;background:#0f1a36;border-radius:12px;padding:8px}
+  .small{font-size:13px;color:var(--ink);opacity:.95}
+
+  /* Chart responsif (nyaman di Android) */
+  .chartbox{width:100%;height:clamp(220px,36vw,340px)}
+  /* Canvas transparan: warna diisi plugin sesuai tema */
+  canvas{width:100%!important;height:100%!important;background:transparent;border-radius:12px;padding:8px}
+
   footer{max-width:1100px;margin:20px auto 60px;color:var(--muted);text-align:center;padding:0 16px}
   footer a{color:var(--accent);text-decoration:none}
   footer a:hover{text-decoration:underline}
 
   /* ==== PRINT FIXES ==== */
   @media print{
-    /* pastikan semua teks terbaca */
+    :root{
+      --chart-bg:#ffffff;  /* area chart putih */
+      --chart-ink:#000000; /* teks chart hitam */
+      --chart-grid:rgba(0,0,0,.18);
+    }
     *{
       background:transparent !important;
       color:#000 !important;
@@ -82,12 +96,11 @@
     header p, .hint{color:#000 !important}
     .card, .stat, table, th, td{background:#fff !important; color:#000 !important; border-color:#000 !important}
     .pill{border-color:#000 !important; color:#000 !important; background:transparent !important}
-    /* jadikan chart persegi dan tajam */
+    /* chart persegi biar tidak lonjong */
     .chartbox{height:auto !important}
     canvas{
-      width:140mm !important;   /* persegi untuk A4 portrait */
-      height:140mm !important;  /* hindari “melonjong” */
-      background:#fff !important;
+      width:140mm !important;   /* A4 portrait, persegi */
+      height:140mm !important;
       padding:0 !important;
       border-radius:0 !important;
     }
@@ -196,6 +209,7 @@
     </div>
   </div>
 
+  <!-- Seksi dengan rekomendasi DINAMIS -->
   <div class="card">
     <h2 id="t_sec1">1. Durasi Kerja & Jeda (Vibration Breaks)</h2>
     <p id="t_sec1p">
@@ -271,7 +285,9 @@
   <div>Created by</div>
   <div>HTML design by Abrar</div>
   <div>Turner &amp; Towsand Indonesia</div>
-  <div style="margin-top:8px"><a href="https://mokhamadabrar.github.io/vibration/exposureSIM.html" target="_blank" rel="noopener">GitHub Pages: exposureSIM.html</a></div>
+  <div style="margin-top:8px">
+    <a href="https://mokhamadabrar.github.io/vibration/exposureSIM.html" target="_blank" rel="noopener">GitHub Pages: exposureSIM.html</a>
+  </div>
 </footer>
 
 <script>
@@ -325,6 +341,107 @@ const T = {
   }
 };
 
+let lang='id';
+
+/*** CSS var helper ***/
+function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+/*** Chart area background plugin (pakai tema) ***/
+const areaBG = {
+  id:'areaBG',
+  beforeDraw(chart){
+    const {ctx, chartArea} = chart; if(!chartArea) return;
+    ctx.save();
+    ctx.fillStyle = cssVar('--chart-bg') || '#ffffff';
+    ctx.fillRect(chartArea.left, chartArea.top, chartArea.right-chartArea.left, chartArea.bottom-chartArea.top);
+    ctx.restore();
+  }
+};
+
+/*** Terapkan warna teks/grid/legend supaya kontras ***/
+function applyChartTheme(ch){
+  if(!ch) return;
+  const ink  = cssVar('--chart-ink')  || '#e5e7eb';
+  const grid = cssVar('--chart-grid') || 'rgba(255,255,255,.14)';
+
+  if(ch.options.scales){
+    ['x','y'].forEach(ax=>{
+      if(ch.options.scales[ax]){
+        ch.options.scales[ax].ticks  ||= {};
+        ch.options.scales[ax].grid   ||= {};
+        ch.options.scales[ax].title  ||= {};
+        ch.options.scales[ax].ticks.color = ink;
+        ch.options.scales[ax].title.color = ink;
+        ch.options.scales[ax].grid.color  = grid;
+        ch.options.scales[ax].grid.borderColor = grid;
+      }
+    });
+  }
+  ch.options.plugins ||= {};
+  ch.options.plugins.legend ||= {};
+  ch.options.plugins.legend.labels ||= {};
+  ch.options.plugins.legend.labels.color = ink;
+
+  ch.update('none');
+}
+
+/*** Charts ***/
+let chartWB, chartA8;
+function setChartLang(){
+  if(chartA8){
+    chartA8.options.scales.x.title.text = (lang==='id'?'Shift (jam)':'Shift (h)');
+    chartA8.options.scales.y.title.text = 'A(8) (m/s²)';
+    chartA8.update('none');
+  }
+}
+function buildCharts(){
+  const ctx1=document.getElementById('chartWB');
+  if(chartWB) chartWB.destroy();
+  chartWB = new Chart(ctx1, {
+    type:'doughnut',
+    data:{labels:['Work','Break'], datasets:[{data:[50,10]}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}},
+    plugins:[areaBG]
+  });
+
+  const ctx2=document.getElementById('chartA8');
+  if(chartA8) chartA8.destroy();
+  chartA8 = new Chart(ctx2, {
+    type:'line',
+    data:{labels:[], datasets:[{label:'A(8)', data:[], tension:0.25, pointRadius:2}]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{title:{display:true,text:'Shift (jam)'}}, y:{title:{display:true,text:'A(8) (m/s²)'}}}
+    },
+    plugins:[areaBG]
+  });
+
+  applyChartTheme(chartWB);
+  applyChartTheme(chartA8);
+  setChartLang();
+}
+
+/*** Print: tajam & persegi saat print, kembali normal setelahnya ***/
+let prevDPR=1;
+function beforePrint(){
+  prevDPR = Chart.defaults.devicePixelRatio;
+  Chart.defaults.devicePixelRatio = 2;
+  applyChartTheme(chartWB);
+  applyChartTheme(chartA8);
+  chartWB.resize(600,600);
+  chartA8.resize(600,600);
+}
+function afterPrint(){
+  Chart.defaults.devicePixelRatio = prevDPR;
+  chartWB.resize(); chartA8.resize();
+  applyChartTheme(chartWB);
+  applyChartTheme(chartA8);
+}
+window.addEventListener('beforeprint', beforePrint);
+window.addEventListener('afterprint',  afterPrint);
+
+/*** i18n text setter ***/
 function setLang(newLang){
   lang=newLang;
   const L=T[lang]; if(!L) return;
@@ -353,31 +470,22 @@ function setLang(newLang){
   set('t_sec7', L.s7); set('t_sec7ul', L.s7ul);
   set('t_foot', L.foot);
 
-  // label dinamis
+  // label dinamis seksi 1
   document.getElementById('t_workdur').childNodes[0].nodeValue = L.s1ulExtra_work;
   document.getElementById('t_breakdur').childNodes[0].nodeValue = L.s1ulExtra_break;
 
-  updateRotationLabels();
-  recalc();
-}
-function updateRotationLabels(){
-  const L=T[lang];
+  // rotasi dinamis
   document.getElementById('t_rotExample1').innerHTML =
     `${L.rotExample1_prefix}<b id="rotToolHours">—</b>${L.rotExample1_mid}<b id="rotOps">—</b>${L.rotExample1_suf}`;
   document.getElementById('t_rotExample2').innerHTML =
     `${L.rotExample2_prefix}<b id="rotWork">—</b>${L.rotExample2_mid}<b id="rotBreak">—</b>${L.rotExample2_suf}`;
-}
-function pillText(a8){
-  const P=T[lang].pills;
-  if(!isFinite(a8)) return {text:"—", cls:"pill"};
-  if(a8 < 2.5) return {text:P.below, cls:"pill ok"};
-  if(Math.abs(a8-2.5)<1e-9) return {text:P.at, cls:"pill warn"};
-  if(a8 > 5.0) return {text:P.above, cls:"pill bad"};
-  return {text:P.between, cls:"pill warn"};
-}
-function fmt(x,d=2){ if(!isFinite(x)) return "—"; return Number(x).toFixed(d); }
 
-/*** Presets ***/
+  // bahasa pada chart
+  setChartLang();
+  recalc();
+}
+
+/*** Preset data ***/
 const defaultPresets = [
   {work:60, break:0,  labelID:"60′ kerja + 0′ jeda (kontinu)", labelEN:"60′ work + 0′ break (continuous)"},
   {work:50, break:10, labelID:"50′ kerja + 10′ jeda", labelEN:"50′ work + 10′ break"},
@@ -386,109 +494,43 @@ const defaultPresets = [
   {work:30, break:30, labelID:"30′ kerja + 30′ jeda", labelEN:"30′ work + 30′ break"},
   {work:20, break:40, labelID:"20′ kerja + 40′ jeda", labelEN:"20′ work + 40′ break"}
 ];
-let customPresets = [];
-
-/*** Charts ***/
-let chartWB, chartA8;
-/* plugin: isi background putih saat render agar PDF jelas */
-const whiteBG = {
-  id:'whiteBG',
-  beforeDraw:(chart, args, opts)=>{
-    const {ctx, chartArea} = chart;
-    if(!chartArea) return;
-    ctx.save();
-    ctx.fillStyle = opts?.color || '#ffffff';
-    ctx.fillRect(chartArea.left, chartArea.top, chartArea.right-chartArea.left, chartArea.bottom-chartArea.top);
-    ctx.restore();
-  }
-};
-function buildCharts(){
-  const ctx1=document.getElementById('chartWB');
-  if(chartWB) chartWB.destroy();
-  chartWB = new Chart(ctx1, {
-    type:'doughnut',
-    data:{labels:['Work','Break'], datasets:[{data:[50,10]}]},
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{position:'bottom'}, whiteBG:{}}
-    },
-    plugins:[whiteBG]
-  });
-  const ctx2=document.getElementById('chartA8');
-  if(chartA8) chartA8.destroy();
-  chartA8 = new Chart(ctx2, {
-    type:'line',
-    data:{labels:[], datasets:[{label:'A(8)', data:[], tension:0.25, pointRadius:2}]},
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}, whiteBG:{}},
-      scales:{
-        x:{title:{display:true,text:'Shift (h)'}},
-        y:{title:{display:true,text:'A(8) (m/s²)'}}
-      }
-    },
-    plugins:[whiteBG]
-  });
-}
-
-/*** PRINT: paksa persegi & tajam saat print; kembalikan setelah print ***/
-let prevStates = {};
-function beforePrint(){
-  // Naikkan DPI untuk ketajaman
-  const oldDPR = Chart.defaults.devicePixelRatio;
-  prevStates.dpr = oldDPR;
-  Chart.defaults.devicePixelRatio = 2;
-
-  // ubah opsi agar aspect ratio dipertahankan
-  [chartWB, chartA8].forEach(ch=>{
-    if(!ch) return;
-    prevStates[ch.id] = { mar: ch.options.maintainAspectRatio };
-    ch.options.maintainAspectRatio = true;
-    ch.resize(600,600); // paksa persegi (akan ditimpa CSS print juga)
-    ch.update();
-  });
-}
-function afterPrint(){
-  // kembalikan DPI & opsi
-  if(typeof prevStates.dpr!=='undefined'){
-    Chart.defaults.devicePixelRatio = prevStates.dpr;
-  }
-  [chartWB, chartA8].forEach(ch=>{
-    if(!ch) return;
-    ch.options.maintainAspectRatio = false;
-    ch.resize(); ch.update();
-  });
-  prevStates = {};
-}
-window.addEventListener('beforeprint', beforePrint);
-window.addEventListener('afterprint', afterPrint);
+let customPresets = []; // {work, break}
 
 /*** Core calc ***/
+function fmt(x,d=2){ if(!isFinite(x)) return "—"; return Number(x).toFixed(d); }
+
 function recalc(){
   const ahv = parseFloat(document.getElementById('ahv').value);
   let targetA = parseFloat(document.getElementById('targetA').value);
   const shiftH = parseFloat(document.getElementById('shiftH').value);
   const toolHours = parseFloat(document.getElementById('toolHours').value);
+
   if(!isFinite(targetA) || targetA <= 0){ targetA = 2.20; document.getElementById('targetA').value = targetA; }
 
+  // A(8) continuous selama shift
   const Tfull = shiftH;
   const a8full = ahv * Math.sqrt(Tfull/8);
-  const pill = pillText(a8full);
+  const pill = (a8full<2.5)?{text:T[lang].pills.below,cls:'pill ok'}:(a8full>5.0?{text:T[lang].pills.above,cls:'pill bad'}:(Math.abs(a8full-2.5)<1e-9?{text:T[lang].pills.at,cls:'pill warn'}:{text:T[lang].pills.between,cls:'pill warn'}));
   document.getElementById('a8full').textContent = fmt(a8full,2);
   const pillEl = document.getElementById('statusPill'); pillEl.textContent=pill.text; pillEl.className=pill.cls;
 
+  // T_max berbasis target (basis 8 jam), lalu batasi oleh shift
   const Tmax8 = 8 * Math.pow(targetA/ahv, 2);
   const TmaxLimited = Math.min(Tmax8, shiftH);
   document.getElementById('tmax8').textContent = fmt(Tmax8,2);
   document.getElementById('tmaxLimited').textContent = fmt(TmaxLimited,2);
 
+  // Duty & rekomendasi per jam
   const duty = (shiftH>0)? (TmaxLimited/shiftH) : 0;
   const workMin = Math.round(60*duty);
   const breakMin = Math.max(0, 60 - workMin);
   document.getElementById('perHour').textContent = `${workMin}′ + ${breakMin}′`;
+
+  // Update poin dinamis (Seksi 1)
   document.getElementById('wbWorkMin').textContent = workMin;
   document.getElementById('wbBreakMin').textContent = breakMin;
 
+  // Rotasi operator (Seksi 2)
   let opsNeeded = "—";
   if(isFinite(toolHours) && toolHours>0 && TmaxLimited>0){
     opsNeeded = Math.ceil(toolHours / TmaxLimited);
@@ -499,6 +541,7 @@ function recalc(){
   document.getElementById('rotWork').textContent = workMin;
   document.getElementById('rotBreak').textContent = breakMin;
 
+  // Tabel preset (basis shift)
   const rows=[...defaultPresets, ...customPresets];
   const tbody=document.querySelector('#schedTable tbody');
   tbody.innerHTML="";
@@ -506,7 +549,7 @@ function recalc(){
     const dutyRow = p.work/60;
     const T = dutyRow * shiftH;
     const A8 = ahv * Math.sqrt(T/8);
-    const st = pillText(A8);
+    const st = (A8<2.5)?{text:T[lang].pills.below,cls:'pill ok'}:(A8>5.0?{text:T[lang].pills.above,cls:'pill bad'}:(Math.abs(A8-2.5)<1e-9?{text:T[lang].pills.at,cls:'pill warn'}:{text:T[lang].pills.between,cls:'pill warn'}));
     const label = (lang==='id' ? (p.labelID || `${p.work}′ kerja + ${p.break}′ jeda`) :
                                (p.labelEN || `${p.work}′ work + ${p.break}′ break`));
     const tr=document.createElement('tr');
@@ -521,7 +564,7 @@ function recalc(){
     tbody.appendChild(tr);
   });
 
-  // update charts
+  // Update charts & theme
   chartWB.data.datasets[0].data=[workMin, breakMin];
   chartWB.data.labels = (lang==='id')?['Kerja','Jeda']:['Work','Break'];
   chartWB.update();
@@ -535,6 +578,9 @@ function recalc(){
   chartA8.data.labels=xs;
   chartA8.data.datasets[0].data=ys;
   chartA8.update();
+
+  applyChartTheme(chartWB);
+  applyChartTheme(chartA8);
 }
 
 /*** Preset CRUD ***/
@@ -560,10 +606,8 @@ document.addEventListener('click', (e)=>{
   }
 });
 
-/*** Print ***/
+/*** Actions ***/
 document.getElementById('btnPrint').addEventListener('click', ()=>window.print());
-
-/*** Events ***/
 document.getElementById('btnCalc').addEventListener('click', recalc);
 document.getElementById('btnAddPreset').addEventListener('click', addPreset);
 document.getElementById('langSel').addEventListener('change', (e)=>{ setLang(e.target.value); });
@@ -574,7 +618,7 @@ document.getElementById('langSel').addEventListener('change', (e)=>{ setLang(e.t
 /*** Init ***/
 function init(){
   buildCharts();
-  setLang('id');
+  setLang('id');  // default ID
   recalc();
 }
 init();
